@@ -3,7 +3,7 @@
 Barrett's neoplasia (NEO) vs non-dysplastic Barrett's oesophagus (NDBE) classification, submitted
 to the [RARE 2026 challenge](https://rare26.grand-challenge.org/) by team AIMS, University of Leeds.
 
-A 30-member ensemble of LoRA adapters on a single frozen DINOv3 backbone, trained against a
+A 30-model ensemble of LoRA adapters on a single frozen DINOv3 backbone, trained against a
 tail-focused objective.
 
 ## Method
@@ -12,8 +12,8 @@ tail-focused objective.
 |---|---|
 | Backbone | DINOv3 ViT-L/16, LVD-1689M weights, frozen |
 | Adaptation | LoRA, rank 32, alpha 64, applied to every `nn.Linear`, plus a 2-way head |
-| Trainable tensors | 194 per member. The backbone is never updated. |
-| Ensemble | 30 members (5 CV folds x 6 seeds, 40 to 45), averaged |
+| Trainable tensors | 194 per classifier. The backbone receives no gradients. |
+| Ensemble | 30 classifiers (5 CV folds x 6 seeds, 40 to 45), probability-averaged |
 | Objective | Partial AUC over the low-FPR region, with hard-negative mining |
 | Test-time augmentation | Multi-crop max over 5 crops, plus 336px resolution |
 
@@ -43,7 +43,7 @@ The 0.077 to 0.285 step has separated confidence intervals.
 All of these were run as paired comparisons.
 
 * Going from 3 to 10 seeds in the ensemble gave no separable gain. The training data covers few
-  centres, so member errors are correlated.
+  centres, so prediction errors are correlated across the ensemble.
 * A mixed CNN and ViT ensemble did not help on either split. ResNet-50 dilutes the average.
 * In-domain self-supervised pretraining failed, and so did its non-SSL control. Since the control
   failed too, there was no SSL-specific effect to find.
@@ -52,8 +52,8 @@ All of these were run as paired comparisons.
 
 ## Limitations
 
-1. Centre coverage limits this method more than anything else. With few centres, ensemble members
-   make correlated errors, so adding diversity does not pay off.
+1. Centre coverage is the binding constraint. With few centres, errors are correlated across the
+   ensemble, so additional diversity yields no measurable gain.
 2. The bootstrap CI on PPV@90recall is wider than the spread across the leaderboard, so small gaps
    between teams do not mean much.
 3. Early internal cross-validation pooled scores across folds, which inflated some absolute numbers.
@@ -93,7 +93,7 @@ network path at runtime.
 
 ### Weights
 
-The 30 member checkpoints come to about 2.6 GB, so they are not in Git. Available on request.
+The 30 checkpoints total about 2.6 GB, so they are not in Git. Available on request.
 
 ## Licence
 
