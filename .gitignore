@@ -1,0 +1,16 @@
+# model weights and checkpoints (2.6 GB; distributed separately)
+*.pt
+*.pth
+*.ckpt
+resources/
+# challenge data is not ours to redistribute
+data/
+# vendored third-party source (see THIRD_PARTY_NOTICES.md)
+dino_repo/
+# build and run artefacts
+*.tar
+*.sif
+__pycache__/
+*.py[cod]
+.DS_Store
+logs/
